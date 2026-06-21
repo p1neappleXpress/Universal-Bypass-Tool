@@ -3,12 +3,12 @@
 Network stack research tool. TCP tunnel with pluggable transports.
 
 ```
-Client (SOCKS5) --> Transport (Yandex Docs WS) --> Exit Node --> Internet
+Client (SOCKS5) --> Transport --> Exit Node --> Internet
 ```
 
 ## What it does
 
-Sends TCP packets through Yandex Docs cursor messages. Client side runs a SOCKS5 proxy, exit node decapsulates and forwards to real internet.
+Sends TCP packets through Yandex Docs cursor messages (or webRTC datachannel if MAX transport selected). Client side runs a SOCKS5 proxy, exit node decapsulates and forwards to real internet.
 
 ## Structure
 
