@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"universal-bypass-tool/socks5"
 	"universal-bypass-tool/transport"
+	"universal-bypass-tool/transport/oneme"
 	"universal-bypass-tool/transport/yandex"
 	"universal-bypass-tool/tunnel"
 	"universal-bypass-tool/utils"
@@ -15,6 +17,8 @@ import (
 
 var (
 	globalDocUrl string
+	maxToken     string
+	maxUid       string
 )
 
 func main() {
@@ -25,7 +29,9 @@ func main() {
 	debug := flag.Bool("debug", false, "Enable verbose debug logging")
 	socksAddr := flag.String("socks5", ":1080", "SOCKS5 address")
 	transportType := flag.String("transport", "yandex", "Transport type (yandex, google, custom)")
-	flag.StringVar(&globalDocUrl, "url", "https://localhost", "Document URL")
+	flag.StringVar(&globalDocUrl, "url", "http://#", "Document URL. If u use Yandex.Docs transport")
+	flag.StringVar(&maxToken, "maxToken", "", "MAX call user id. If u use MAX transport")
+	flag.StringVar(&maxUid, "maxUid", "", "MAX Web token. If u use MAX transport")
 	flag.Parse()
 
 	if !*exitNode && !*client {
@@ -47,6 +53,9 @@ func main() {
 	switch *transportType {
 	case "yandex":
 		trans = yandex.NewYandexDocsTransport(globalDocUrl, config)
+	case "oneme":
+		uidint, _ := strconv.ParseInt(maxUid, 10, 64)
+		trans = oneme.NewOneMeTransport(*exitNode, maxToken, uidint, config)
 	default:
 		log.Fatalf("Unknown transport type: %s", *transportType)
 	}

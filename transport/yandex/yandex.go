@@ -41,7 +41,6 @@ type DocSession struct {
 	writeMu    sync.Mutex
 }
 
-// safeWrite protects all writes to the websocket connection
 func (s *DocSession) safeWrite(messageType int, data []byte) error {
 	s.writeMu.Lock()
 	defer s.writeMu.Unlock()
