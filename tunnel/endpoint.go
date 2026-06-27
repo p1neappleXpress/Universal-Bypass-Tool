@@ -1,7 +1,6 @@
 package tunnel
 
 import (
-	"fmt"
 	"sync/atomic"
 
 	"gvisor.dev/gvisor/pkg/buffer"
@@ -27,9 +26,7 @@ func NewTunnelLinkEndpoint() *TunnelLinkEndpoint {
 
 func (e *TunnelLinkEndpoint) InjectInbound(data []byte) {
 	e.packetIn.Add(1)
-	utils.Debugf("[TUNL] Inject inbound: %s", network.ParsePacketInfo(data))
-
-	fmt.Printf("<- %d bytes - %s\n", len(data), network.ParsePacketInfo(data))
+	utils.Debugf("<- %d bytes - %s\n", len(data), network.ParsePacketInfo(data))
 	pkt := stack.NewPacketBuffer(stack.PacketBufferOptions{
 		Payload: buffer.MakeWithData(append([]byte{}, data...)),
 	})
@@ -41,7 +38,6 @@ func (e *TunnelLinkEndpoint) WritePackets(pkts stack.PacketBufferList) (int, tcp
 	for _, pkt := range pkts.AsSlice() {
 		data := pkt.ToView().ToSlice()
 		e.packetOut.Add(1)
-		fmt.Printf("-> %d bytes - %s\n", len(data), network.ParsePacketInfo(data))
 		if e.onOutgoingPacket != nil {
 			e.onOutgoingPacket(data)
 		}

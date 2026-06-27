@@ -51,7 +51,6 @@ func NewTCPTunnel(trans transport.Transport, isExitNode bool) *TCPTunnel {
 
 	tunnelEP := NewTunnelLinkEndpoint()
 	tunnelEP.onOutgoingPacket = func(data []byte) {
-		utils.Debugf("[TUNNEL] Outgoing via transport: %d bytes", len(data))
 		trans.Send(data)
 	}
 	t.tunnelEP = tunnelEP

@@ -198,13 +198,10 @@ func (h *CallHandler) injectICE(payload []byte) {
 		Candidate string `json:"candidate"`
 	}
 	structPayload := ice{Candidate: base64.StdEncoding.EncodeToString(payload)}
-	fmt.Println(structPayload)
 	escaped, _ := json.Marshal(structPayload.Candidate)
-	fmt.Println(escaped)
 	msg := fmt.Sprintf(`{"command":"transmit-data","sequence":%d,"participantId":%d,"data":{"candidate":{"candidate":%s}},"participantType":"USER"}`,
 		h.seq, h.localID, string(escaped))
 	h.seq++
-	fmt.Println(msg)
 	h.conn.WriteMessage(websocket.TextMessage, []byte(msg))
 }
 
@@ -223,9 +220,6 @@ func (h *CallHandler) sendICE(candidateJSON string) {
 	msg := fmt.Sprintf(`{"command":"transmit-data","sequence":%d,"participantId":%d,"data":{"candidate":{"candidate":%s}},"participantType":"USER"}`,
 		h.seq, h.localID, string(escaped))
 	h.seq++
-	fmt.Println("ICEe->" + string(escaped))
-	fmt.Println("ICEo->" + candidateJSON)
-	fmt.Println("ICE->" + msg)
 	h.conn.WriteMessage(websocket.TextMessage, []byte(msg))
 }
 
@@ -392,7 +386,6 @@ func startOutgoingCall(client *MaxClient, calleeID int64) *CallHandler {
 		}
 		if c, ok := d["candidate"].(map[string]interface{}); ok {
 			if useICEInjection {
-				fmt.Println(c)
 				candidateStr, _ := c["candidate"].(string)
 				decode, _ := base64.StdEncoding.DecodeString(candidateStr)
 				h.dcInbound(decode)
@@ -428,7 +421,6 @@ func startIncomingListener(client *MaxClient) *CallHandler {
 	h.seq = 1
 	// h.localID = 910305521005
 	h.msgHandler = func(text string) {
-		fmt.Println(text)
 		var data map[string]interface{}
 		json.Unmarshal([]byte(text), &data)
 
